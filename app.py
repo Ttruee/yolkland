@@ -12,17 +12,18 @@ api = Api(app)
 model = pickle.load(open('lm.pkl','rb'))
 
 # 입력 형태에 맞게 만들어주는 함수
-def _create_input(_quarter, _code, _ser_code, _n):
+def _create_input(_s_facil_no_of_supmkt, _s_facil_no_of_bank, _s_facil_no_of_subway, _s_facil_no_of_dept, _s_facil_no_of_bus):
     return [np.array(pd.Series({
-        'quarter': _quarter,
-        'code': _code,
-        'ser_code': _ser_code,
-        'n': _n
+        's_facil_no_of_supmkt': _s_facil_no_of_supmkt,
+        's_facil_no_of_bank': _s_facil_no_of_bank,
+        's_facil_no_of_subway': _s_facil_no_of_subway,
+        's_facil_no_of_dept': _s_facil_no_of_dept,
+        's_facil_no_of_bus': _s_facil_no_of_bus
     }))]
 
 # 입력 받은 값으로 예측한 결과값을 출력
-def predict_value(_quarter, _code, _ser_code, _n):
-    data_input = _create_input(_quarter, _code, _ser_code, _n)
+def predict_value(_s_facil_no_of_supmkt, _s_facil_no_of_bank, _s_facil_no_of_subway, _s_facil_no_of_dept, _s_facil_no_of_bus):
+    data_input = _create_input(_s_facil_no_of_supmkt, _s_facil_no_of_bank, _s_facil_no_of_subway, _s_facil_no_of_dept, _s_facil_no_of_bus)
     result_value = model.predict(data_input)
 
     return result_value[0]
@@ -33,17 +34,17 @@ class getAllData(Resource):
     @api.response(200, 'Success')
     @api.response(500, 'Failed')
     def get(self):
-        quarter = float(request.args.get('quarter'))
-        code = float(request.args.get('code'))
-        ser_code = float(request.args.get('ser_code'))
-        n = float(request.args.get('n'))
-        
-        
+        s_facil_no_of_supmkt = float(request.args.get('s_facil_no_of_supmkt'))
+        s_facil_no_of_bank = float(request.args.get('s_facil_no_of_bank'))
+        s_facil_no_of_subway = float(request.args.get('s_facil_no_of_subway'))
+        s_facil_no_of_dept = float(request.args.get('s_facil_no_of_dept'))
+        s_facil_no_of_bus = float(request.args.get('s_facil_no_of_bus'))
+             
         return {
-            "result": predict_value(quarter, code, ser_code, n)
+            "result": predict_value(s_facil_no_of_supmkt, s_facil_no_of_bank, s_facil_no_of_subway, s_facil_no_of_dept, s_facil_no_of_bus)
         }
         
-app.run(debug=True, host='0.0.0.0', port=80)
+app.run(debug=False, host='0.0.0.0', port=5000)
 # 이 파일을 직접 실행할 경우에 main에 있는 걸 실행 
 # if __name__ == "__main__":
 #     app.run(debug=True, host='0.0.0.0', port=80)
